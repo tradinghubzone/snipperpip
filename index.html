@@ -3,745 +3,392 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>US500 Snipper • AI 1H Scanner</title>
-  <!-- Font & icons -->
+  <title>US500 MT5 Synced Bot</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: #0b0f17;
       font-family: 'Inter', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 16px;
-      color: #eef2ff;
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; padding: 16px; color: #eef2ff;
     }
-
-    /* Main card – clean glassmorphism */
     .bot-card {
-      max-width: 880px;
-      width: 100%;
+      max-width: 880px; width: 100%;
       background: rgba(18, 25, 40, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(78, 110, 180, 0.25);
-      border-radius: 36px;
-      padding: 28px 24px;
-      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(120, 160, 255, 0.1) inset;
-      transition: all 0.2s;
+      border-radius: 36px; padding: 28px 24px;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.8);
     }
-
-    /* header */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 22px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo i {
-      font-size: 26px;
-      color: #4f8cff;
-      text-shadow: 0 0 12px rgba(79, 140, 255, 0.6);
-    }
-
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo i { font-size: 26px; color: #4f8cff; }
     .logo h1 {
-      font-weight: 600;
-      font-size: 1.6rem;
-      letter-spacing: -0.5px;
+      font-weight: 600; font-size: 1.6rem; letter-spacing: -0.5px;
       background: linear-gradient(135deg, #ffffff, #b7c9ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-
     .badge {
-      background: #1a2842;
-      padding: 6px 16px;
-      border-radius: 100px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #94b0ff;
-      border: 1px solid #2e4170;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      background: #1a2842; padding: 6px 16px; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 600; color: #94b0ff; border: 1px solid #2e4170;
     }
-
-    /* Price row */
     .price-block {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      justify-content: space-between;
-      margin-bottom: 14px;
-      background: #0b1221;
-      padding: 14px 20px;
-      border-radius: 28px;
-      border: 1px solid #1e2d4b;
+      display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+      margin-bottom: 14px; background: #0b1221; padding: 14px 20px;
+      border-radius: 28px; border: 1px solid #1e2d4b;
     }
-
-    .symbol {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .symbol i {
-      color: #ffd966;
-      font-size: 1.2rem;
-    }
-
-    .symbol span {
-      font-weight: 700;
-      font-size: 1.5rem;
-      letter-spacing: -0.02em;
-    }
-
-    .current-price {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-    }
-
-    .price-value {
-      font-weight: 700;
-      font-size: 2.2rem;
-      font-variant-numeric: tabular-nums;
-      color: #ffffff;
-      line-height: 1.1;
-    }
-
-    .change {
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 4px 10px;
-      border-radius: 40px;
-      background: rgba(0, 200, 120, 0.15);
-      color: #41d98d;
-    }
-
-    /* TF badge */
-    .tf-badge {
-      background: #0e1b2f;
-      border: 1px solid #2b4a7a;
-      border-radius: 16px;
-      padding: 4px 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #b0c8ff;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      letter-spacing: 0.3px;
-    }
-
-    .tf-badge i {
-      font-size: 0.8rem;
-      color: #4f8cff;
-    }
-
-    /* Snipper entry card */
+    .symbol { display: flex; align-items: center; gap: 10px; }
+    .symbol i { color: #ffd966; }
+    .symbol span { font-weight: 700; font-size: 1.5rem; }
+    .current-price { display: flex; align-items: baseline; gap: 12px; }
+    .price-value { font-weight: 700; font-size: 2.2rem; color: #ffffff; }
+    .change { font-weight: 600; font-size: 0.9rem; padding: 4px 10px; border-radius: 40px; }
+    
+    /* Snipper Card */
     .snipper-card {
       background: linear-gradient(145deg, #101b2e, #0b1322);
-      border-radius: 28px;
-      padding: 22px 22px 18px;
-      margin: 20px 0 18px;
-      border: 1px solid #26416b;
-      box-shadow: 0 8px 0 #05080f, 0 12px 28px -10px #00000080;
+      border-radius: 28px; padding: 22px; margin: 20px 0;
+      border: 1px solid #26416b; box-shadow: 0 8px 0 #05080f;
+      transition: border-color 0.3s;
     }
-
-    .snipper-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
+    .snipper-card.locked { border-color: #ffb347; }
+    .snipper-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .snipper-header i { font-size: 1.3rem; color: #4f8cff; background: #14233e; padding: 10px; border-radius: 16px; }
+    .snipper-header h2 { font-size: 1.25rem; font-weight: 600; }
+    .status-badge {
+      margin-left: auto; font-size: 0.7rem; font-weight: 700;
+      padding: 4px 10px; border-radius: 40px; text-transform: uppercase;
     }
-
-    .snipper-header i {
-      font-size: 1.3rem;
-      color: #4f8cff;
-      background: #14233e;
-      padding: 10px;
-      border-radius: 16px;
-    }
-
-    .snipper-header h2 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-    }
-
-    .snipper-header span {
-      background: #1f3456;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 40px;
-      text-transform: uppercase;
-      color: #99b8ff;
-      margin-left: auto;
-    }
+    .status-badge.scanning { background: #1f3456; color: #99b8ff; }
+    .status-badge.locked { background: rgba(255, 179, 71, 0.2); color: #ffb347; border: 1px solid #ffb347; }
+    .status-badge.win { background: rgba(45, 219, 140, 0.2); color: #2ddb8c; border: 1px solid #2ddb8c; }
+    .status-badge.loss { background: rgba(255, 94, 124, 0.2); color: #ff5e7c; border: 1px solid #ff5e7c; }
 
     .entry-direction {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #0b1322;
-      padding: 12px 18px;
-      border-radius: 60px;
-      margin-bottom: 22px;
-      border: 1px solid #1f375a;
+      display: flex; align-items: center; justify-content: space-between;
+      background: #0b1322; padding: 12px 18px; border-radius: 60px;
+      margin-bottom: 22px; border: 1px solid #1f375a;
     }
+    .direction-badge { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; }
+    .long { color: #2ddb8c; }
+    .short { color: #ff5e7c; }
+    .entry-price { font-weight: 700; font-size: 1.5rem; background: #00000033; padding: 6px 16px; border-radius: 40px; }
 
-    .direction-badge {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 1.2rem;
-    }
+    .sl-tp-row { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+    .sl-tp-item { flex: 1 1 140px; background: #0d1525; border-radius: 20px; padding: 14px 16px; border-left: 4px solid; }
+    .sl-tp-item.sl { border-left-color: #ff5e7c; }
+    .sl-tp-item.tp { border-left-color: #2ddb8c; }
+    .sl-tp-label { font-size: 0.75rem; color: #7f9bcf; font-weight: 600; margin-bottom: 6px; }
+    .sl-tp-value { font-size: 1.4rem; font-weight: 700; }
 
-    .direction-badge i {
-      font-size: 1.4rem;
-    }
-
-    .long {
-      color: #2ddb8c;
-      text-shadow: 0 0 10px #2ddb8c80;
-    }
-
-    .short {
-      color: #ff5e7c;
-      text-shadow: 0 0 10px #ff5e7c80;
-    }
-
-    .entry-price {
-      font-weight: 700;
-      font-size: 1.5rem;
-      font-variant-numeric: tabular-nums;
-      background: #00000033;
-      padding: 6px 16px;
-      border-radius: 40px;
-      letter-spacing: -0.5px;
-    }
-
-    /* SL / TP row */
-    .sl-tp-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .sl-tp-item {
-      flex: 1 1 140px;
-      background: #0d1525;
-      border-radius: 20px;
-      padding: 14px 16px;
-      border-left: 4px solid;
-    }
-
-    .sl-tp-item.sl {
-      border-left-color: #ff5e7c;
-    }
-
-    .sl-tp-item.tp {
-      border-left-color: #2ddb8c;
-    }
-
-    .sl-tp-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #7f9bcf;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 6px;
-    }
-
-    .sl-tp-value {
-      font-size: 1.4rem;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.5px;
-    }
-
-    .pips {
-      font-size: 0.8rem;
-      color: #8199c7;
-      margin-left: 8px;
-      font-weight: 500;
-    }
-
-    /* countdown + status */
     .countdown-box {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      background: #070e19;
-      border-radius: 40px;
-      padding: 12px 22px;
-      border: 1px solid #233b60;
-      margin: 16px 0 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: #070e19; border-radius: 40px; padding: 12px 22px;
+      border: 1px solid #233b60; margin: 16px 0 8px;
     }
+    .countdown-label { display: flex; align-items: center; gap: 10px; color: #9bb3e0; font-weight: 500; }
+    .timer { font-weight: 700; font-size: 1.8rem; color: #ffffff; background: #1b2b46; padding: 6px 18px; border-radius: 60px; }
+    .progress-bar { height: 4px; background: #1a2a42; border-radius: 10px; margin: 6px 0 18px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #4f8cff, #9f7aff); transition: width 1s linear; }
 
-    .countdown-label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #9bb3e0;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-
-    .countdown-label i {
-      font-size: 1.1rem;
-      color: #ffb347;
-    }
-
-    .timer {
-      font-family: 'Inter', monospace;
-      font-weight: 700;
-      font-size: 1.8rem;
-      letter-spacing: 2px;
-      color: #ffffff;
-      background: #1b2b46;
-      padding: 6px 18px;
-      border-radius: 60px;
-      font-variant-numeric: tabular-nums;
-      box-shadow: 0 0 12px #2d4b7a;
-    }
-
-    .progress-bar {
-      height: 4px;
-      background: #1a2a42;
-      border-radius: 10px;
-      margin: 6px 0 18px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 100%;
-      background: linear-gradient(90deg, #4f8cff, #9f7aff);
-      border-radius: 10px;
-      transition: width 0.5s linear;
-    }
-
-    /* bot action / refresh */
-    .action-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .signal-strength {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.85rem;
-      color: #a3bbec;
-    }
-
-    .dots {
-      display: flex;
-      gap: 6px;
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #2a3b5a;
-    }
-
-    .dot.active {
-      background: #4f8cff;
-      box-shadow: 0 0 10px #4f8cff;
-    }
-
+    .action-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     .refresh-btn {
-      background: #1e2f4e;
-      border: none;
-      color: white;
-      padding: 12px 28px;
-      border-radius: 100px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid #31538b;
-      box-shadow: 0 6px 0 #0d1526;
-      letter-spacing: 0.3px;
+      background: #1e2f4e; border: 1px solid #31538b; color: white;
+      padding: 12px 28px; border-radius: 100px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;
     }
+    .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; background: #141c2b; border-color: #1f2937; }
+    .refresh-btn:not(:disabled):hover { background: #27436e; border-color: #4f8cff; }
 
-    .refresh-btn i {
-      font-size: 1rem;
+    /* Simulator controls for testing */
+    .simulator-box {
+      margin-top: 20px; padding: 15px; background: #1a1205; border: 1px dashed #ffb347;
+      border-radius: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
     }
-
-    .refresh-btn:hover {
-      background: #27436e;
-      border-color: #4f8cff;
-      transform: translateY(-1px);
-    }
-
-    .refresh-btn:active {
-      transform: translateY(3px);
-      box-shadow: 0 2px 0 #0d1526;
-    }
-
-    /* footnote */
-    .footnote {
-      margin-top: 16px;
-      font-size: 0.7rem;
-      color: #48628d;
-      text-align: center;
-      letter-spacing: 0.3px;
-    }
-
-    /* responsive tweaks */
-    @media (max-width: 600px) {
-      .bot-card {
-        padding: 20px 16px;
-        border-radius: 28px;
-      }
-
-      .logo h1 {
-        font-size: 1.3rem;
-      }
-
-      .badge {
-        font-size: 0.65rem;
-        padding: 4px 12px;
-      }
-
-      .price-value {
-        font-size: 1.8rem;
-      }
-
-      .symbol span {
-        font-size: 1.3rem;
-      }
-
-      .timer {
-        font-size: 1.4rem;
-        padding: 4px 12px;
-      }
-
-      .sl-tp-value {
-        font-size: 1.2rem;
-      }
-
-      .countdown-label span {
-        font-size: 0.8rem;
-      }
-
-      .refresh-btn {
-        padding: 10px 20px;
-        font-size: 0.8rem;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .sl-tp-row {
-        flex-direction: column;
-      }
-
-      .countdown-box {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-
-      .timer {
-        align-self: flex-end;
-      }
-
-      .snipper-header span {
-        display: none;
-      }
-    }
+    .sim-btn { background: #33260d; color: #ffd966; border: 1px solid #664d1a; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem;}
+    .sim-btn:hover { background: #4d3a14; }
   </style>
 </head>
 <body>
   <div class="bot-card">
-    <!-- header -->
     <div class="header">
-      <div class="logo">
-        <i class="fas fa-robot"></i>
-        <h1>SNIPER BOT</h1>
-      </div>
-      <div class="badge">US500 • 1H</div>
+      <div class="logo"><i class="fas fa-robot"></i><h1>SNIPER BOT</h1></div>
+      <div class="badge">US500 • H1 Synced</div>
     </div>
 
-    <!-- live price / ticker -->
+    <!-- Live Price -->
     <div class="price-block">
-      <div class="symbol">
-        <i class="fas fa-chart-line"></i>
-        <span>US500</span>
-        <span class="tf-badge"><i class="fas fa-clock"></i> 1H</span>
-      </div>
+      <div class="symbol"><i class="fas fa-chart-line"></i><span>US500</span></div>
       <div class="current-price">
-        <span class="price-value" id="livePrice">5,284.50</span>
-        <span class="change" id="priceChange">+0.42%</span>
+        <span class="price-value" id="livePrice">7,548.81</span>
+        <span class="change" id="priceChange">+0.00%</span>
       </div>
     </div>
 
-    <!-- snipper entry card -->
-    <div class="snipper-card">
+    <!-- Snipper Card -->
+    <div class="snipper-card" id="snipperCard">
       <div class="snipper-header">
         <i class="fas fa-crosshairs"></i>
         <h2>SNIPPER ENTRY</h2>
-        <span>1H AI scan</span>
+        <span class="status-badge scanning" id="statusBadge">SCANNING...</span>
       </div>
 
-      <!-- direction & entry -->
-      <div class="entry-direction" id="entryDirection">
+      <div class="entry-direction">
         <div class="direction-badge" id="directionBadge">
-          <i class="fas fa-arrow-up long"></i>
-          <span class="long" id="directionText">LONG</span>
+          <i class="fas fa-minus"></i><span id="directionText">WAITING</span>
         </div>
-        <div class="entry-price" id="entryPrice">5,284.5</div>
+        <div class="entry-price" id="entryPrice">--</div>
       </div>
 
-      <!-- SL / TP row -->
       <div class="sl-tp-row">
         <div class="sl-tp-item sl">
           <div class="sl-tp-label"><i class="fas fa-shield-alt"></i> STOP LOSS</div>
-          <div class="sl-tp-value" id="slValue">5,264.5 <span class="pips">(200 pips)</span></div>
+          <div class="sl-tp-value" id="slValue">--</div>
         </div>
         <div class="sl-tp-item tp">
           <div class="sl-tp-label"><i class="fas fa-bullseye"></i> TAKE PROFIT</div>
-          <div class="sl-tp-value" id="tpValue">5,304.5 <span class="pips">(200 pips)</span></div>
+          <div class="sl-tp-value" id="tpValue">--</div>
         </div>
       </div>
 
-      <!-- countdown / MT5 style -->
+      <!-- MT5 Countdown -->
       <div class="countdown-box">
-        <div class="countdown-label">
-          <i class="fas fa-hourglass-half"></i>
-          <span>MT5 countdown</span>
-        </div>
-        <div class="timer" id="timerDisplay">00:00:12</div>
+        <div class="countdown-label"><i class="fas fa-hourglass-half"></i><span>MT5 Candle Close</span></div>
+        <div class="timer" id="timerDisplay">00:00:00</div>
       </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill" style="width: 80%;"></div>
-      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 100%;"></div></div>
 
-      <!-- signal strength + refresh -->
       <div class="action-row">
-        <div class="signal-strength">
-          <span>AI confidence</span>
-          <div class="dots">
-            <div class="dot active"></div>
-            <div class="dot active"></div>
-            <div class="dot active"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-          </div>
-        </div>
-        <button class="refresh-btn" id="refreshBtn">
-          <i class="fas fa-sync-alt"></i> NEW SNIPER
+        <button class="refresh-btn" id="refreshBtn" disabled>
+          <i class="fas fa-lock"></i> LOCKED
         </button>
       </div>
     </div>
 
-    <!-- footnote -->
-    <div class="footnote">
-      <i class="fas fa-bolt"></i> 1H AI scans US500 • SL/TP = 200 pips • new signal each hour
+    <!-- Testing Tool (Hidden in real production) -->
+    <div class="simulator-box">
+      <div><i class="fas fa-vial"></i> <strong>Test Tool:</strong> Move price to hit SL/TP</div>
+      <div style="display:flex; gap: 8px;">
+        <button class="sim-btn" id="simWin">Hit TP</button>
+        <button class="sim-btn" id="simLoss">Hit SL</button>
+      </div>
     </div>
   </div>
 
   <script>
-    (function() {
-      // ----- config -----
-      const BASE_PRICE = 5284.50;
-      const PIP_VALUE = 0.1;          // 1 pip = 0.1 for US500 (example)
-      const TP_PIPS = 200;
-      const SL_PIPS = 200;
+    // --- CONFIGURATION ---
+    const PIP_VALUE = 0.1;          // 1 pip = 0.1 points for US500
+    const TP_PIPS = 200;            // 200 pips
+    const SL_PIPS = 200;            // 200 pips
+    
+    // We start at the price from your MT5 screenshot
+    let currentPrice = 7548.81;     
+    let basePrice = 7548.81;
 
-      // 1-hour timeframe → 3600 seconds countdown (MT5 style)
-      const COUNTDOWN_TOTAL = 3600;   // 1 hour in seconds
+    // State
+    let isLocked = false;
+    let direction = null;
+    let entryPrice = 0;
+    let slPrice = 0;
+    let tpPrice = 0;
+    
+    let countdownInterval = null;
+    let priceTickInterval = null;
 
-      // DOM elements
-      const livePriceEl = document.getElementById('livePrice');
-      const priceChangeEl = document.getElementById('priceChange');
-      const directionBadge = document.getElementById('directionBadge');
-      const directionText = document.getElementById('directionText');
-      const entryPriceEl = document.getElementById('entryPrice');
-      const slValueEl = document.getElementById('slValue');
-      const tpValueEl = document.getElementById('tpValue');
-      const timerDisplay = document.getElementById('timerDisplay');
-      const progressFill = document.getElementById('progressFill');
-      const refreshBtn = document.getElementById('refreshBtn');
+    // DOM Elements
+    const elLivePrice = document.getElementById('livePrice');
+    const elPriceChange = document.getElementById('priceChange');
+    const elSnipperCard = document.getElementById('snipperCard');
+    const elStatusBadge = document.getElementById('statusBadge');
+    const elDirectionBadge = document.getElementById('directionBadge');
+    const elDirectionText = document.getElementById('directionText');
+    const elEntryPrice = document.getElementById('entryPrice');
+    const elSlValue = document.getElementById('slValue');
+    const elTpValue = document.getElementById('tpValue');
+    const elTimer = document.getElementById('timerDisplay');
+    const elProgress = document.getElementById('progressFill');
+    const elRefreshBtn = document.getElementById('refreshBtn');
 
-      // state
-      let currentPrice = BASE_PRICE;
-      let entryPrice = BASE_PRICE;
-      let direction = 'LONG';        // 'LONG' or 'SHORT'
-      let slPrice = 0;
-      let tpPrice = 0;
+    // --- FORMATTING ---
+    const formatPrice = (val) => val.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-      // countdown state
-      let countdownSeconds = COUNTDOWN_TOTAL;
-      let countdownInterval = null;
+    // --- MT5 TIME SYNC LOGIC ---
+    function updateMT5Countdown() {
+      const now = new Date();
+      
+      // Calculate time until the NEXT H1 candle (top of the hour)
+      // e.g., if it's 21:25, next candle is at 22:00
+      const nextHour = new Date(now);
+      nextHour.setHours(now.getHours() + 1, 0, 0, 0); 
+      
+      const diffMs = nextHour - now;
+      const totalSeconds = Math.floor(diffMs / 1000);
+      
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
 
-      // ---- helper functions ----
-      function formatPrice(value) {
-        return value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      // Update Display
+      elTimer.textContent = 
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      // Update Progress Bar (3600 seconds = 100%)
+      const percent = (totalSeconds / 3600) * 100;
+      elProgress.style.width = `${percent}%`;
+
+      // If new candle forms (00:00:00) AND bot is not locked, trigger scan
+      if (totalSeconds === 0 && !isLocked) {
+        generateNewSignal();
       }
+    }
 
-      // format seconds as HH:MM:SS
-      function formatTime(totalSec) {
-        const sec = Math.max(0, totalSec);
-        const hours = Math.floor(sec / 3600);
-        const minutes = Math.floor((sec % 3600) / 60);
-        const seconds = sec % 60;
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-      }
+    // --- SCANNING & LOCKING LOGIC ---
+    function generateNewSignal() {
+      if (isLocked) return;
 
-      // update UI price + change
-      function updatePriceUI(price) {
-        livePriceEl.textContent = formatPrice(price);
-        const changePercent = ((price - BASE_PRICE) / BASE_PRICE * 100).toFixed(2);
-        priceChangeEl.textContent = (changePercent >= 0 ? '+' : '') + changePercent + '%';
-        priceChangeEl.style.color = changePercent >= 0 ? '#41d98d' : '#ff5e7c';
-        priceChangeEl.style.background = changePercent >= 0 ? 'rgba(0, 200, 120, 0.15)' : 'rgba(255, 94, 124, 0.15)';
-      }
+      // Visual feedback that it's scanning
+      elStatusBadge.className = 'status-badge scanning';
+      elStatusBadge.textContent = 'SCANNING...';
+      elRefreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SCANNING...';
+      elRefreshBtn.disabled = true;
 
-      // compute SL/TP based on entry & direction
-      function computeSLTP(entry, dir) {
-        let sl, tp;
-        if (dir === 'LONG') {
-          sl = entry - (SL_PIPS * PIP_VALUE);
-          tp = entry + (TP_PIPS * PIP_VALUE);
-        } else { // SHORT
-          sl = entry + (SL_PIPS * PIP_VALUE);
-          tp = entry - (TP_PIPS * PIP_VALUE);
-        }
-        return { sl, tp };
-      }
+      setTimeout(() => {
+        // 1. Lock the bot
+        isLocked = true;
+        
+        // 2. Generate random direction
+        direction = Math.random() > 0.5 ? 'LONG' : 'SHORT';
+        entryPrice = currentPrice;
 
-      // update the entire snipper UI with given entry, direction
-      function updateSnipperUI(entry, dir) {
-        direction = dir;
-        entryPrice = entry;
-
-        if (dir === 'LONG') {
-          directionBadge.innerHTML = `<i class="fas fa-arrow-up long"></i><span class="long" id="directionText">LONG</span>`;
+        // 3. Calculate SL & TP
+        if (direction === 'LONG') {
+          slPrice = entryPrice - (SL_PIPS * PIP_VALUE);
+          tpPrice = entryPrice + (TP_PIPS * PIP_VALUE);
+          elDirectionBadge.innerHTML = `<i class="fas fa-arrow-up long"></i><span class="long">LONG</span>`;
         } else {
-          directionBadge.innerHTML = `<i class="fas fa-arrow-down short"></i><span class="short" id="directionText">SHORT</span>`;
+          slPrice = entryPrice + (SL_PIPS * PIP_VALUE);
+          tpPrice = entryPrice - (TP_PIPS * PIP_VALUE);
+          elDirectionBadge.innerHTML = `<i class="fas fa-arrow-down short"></i><span class="short">SHORT</span>`;
         }
 
-        entryPriceEl.textContent = formatPrice(entry);
+        // 4. Update UI
+        elEntryPrice.textContent = formatPrice(entryPrice);
+        elSlValue.innerHTML = `${formatPrice(slPrice)} <span style="font-size:0.8rem;color:#8199c7">(${SL_PIPS} pips)</span>`;
+        elTpValue.innerHTML = `${formatPrice(tpPrice)} <span style="font-size:0.8rem;color:#8199c7">(${TP_PIPS} pips)</span>`;
+        
+        elSnipperCard.classList.add('locked');
+        elStatusBadge.className = 'status-badge locked';
+        elStatusBadge.textContent = 'TRADE ACTIVE';
+        
+        elRefreshBtn.innerHTML = '<i class="fas fa-lock"></i> LOCKED UNTIL SL/TP';
+        elRefreshBtn.disabled = true;
 
-        const { sl, tp } = computeSLTP(entry, dir);
-        slPrice = sl;
-        tpPrice = tp;
+        // Start monitoring price for SL/TP
+        monitorPriceForExit();
 
-        slValueEl.innerHTML = `${formatPrice(sl)} <span class="pips">(${SL_PIPS} pips)</span>`;
-        tpValueEl.innerHTML = `${formatPrice(tp)} <span class="pips">(${TP_PIPS} pips)</span>`;
+      }, 1200); // 1.2s simulated AI scan delay
+    }
+
+    function monitorPriceForExit() {
+      if (!isLocked) return;
+
+      let isHit = false;
+      let hitType = '';
+
+      if (direction === 'LONG') {
+        if (currentPrice >= tpPrice) { isHit = true; hitType = 'WIN'; }
+        if (currentPrice <= slPrice) { isHit = true; hitType = 'LOSS'; }
+      } else if (direction === 'SHORT') {
+        if (currentPrice <= tpPrice) { isHit = true; hitType = 'WIN'; }
+        if (currentPrice >= slPrice) { isHit = true; hitType = 'LOSS'; }
       }
 
-      // start / restart countdown for 1 hour
-      function startCountdown() {
-        if (countdownInterval) clearInterval(countdownInterval);
-        countdownSeconds = COUNTDOWN_TOTAL;
-        timerDisplay.textContent = formatTime(countdownSeconds);
-        progressFill.style.width = '100%';
+      if (isHit) {
+        unlockBot(hitType);
+      }
+    }
 
-        countdownInterval = setInterval(() => {
-          countdownSeconds -= 1;
-          if (countdownSeconds < 0) {
-            // 1 hour passed → generate new snipper (like new 1H candle)
-            generateNewSnipper();
-            return;
-          }
-          timerDisplay.textContent = formatTime(countdownSeconds);
-          const percent = (countdownSeconds / COUNTDOWN_TOTAL) * 100;
-          progressFill.style.width = percent + '%';
-        }, 1000);
+    function unlockBot(result) {
+      isLocked = false;
+      
+      if (result === 'WIN') {
+        elStatusBadge.className = 'status-badge win';
+        elStatusBadge.textContent = 'TP HIT 🎯';
+        elSnipperCard.style.borderColor = '#2ddb8c';
+      } else {
+        elStatusBadge.className = 'status-badge loss';
+        elStatusBadge.textContent = 'SL HIT 🛑';
+        elSnipperCard.style.borderColor = '#ff5e7c';
       }
 
-      // generate a new snipper entry (simulate 1H scan)
-      function generateNewSnipper() {
-        // simulate a new 1H closing price / market snapshot
-        const variation = (Math.random() - 0.5) * 12;  // larger move for 1H
-        currentPrice = BASE_PRICE + variation + (Math.random() - 0.5) * 4;
-        currentPrice = Math.round(currentPrice * 100) / 100;
-        updatePriceUI(currentPrice);
+      // Reset Card visuals
+      elSnipperCard.classList.remove('locked');
+      
+      // Unlock Button
+      elRefreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> SCAN AGAIN';
+      elRefreshBtn.disabled = false;
 
-        // random direction for demo
-        const newDirection = Math.random() > 0.5 ? 'LONG' : 'SHORT';
-        const newEntry = currentPrice;
+      // Clear active trade visuals after a delay
+      setTimeout(() => {
+        if(!isLocked) {
+          elSnipperCard.style.borderColor = '#26416b';
+          elStatusBadge.className = 'status-badge scanning';
+          elStatusBadge.textContent = 'READY TO SCAN';
+        }
+      }, 4000);
+    }
 
-        updateSnipperUI(newEntry, newDirection);
+    // --- PRICE SIMULATOR ---
+    function simulatePriceTick() {
+      // Simulate small market fluctuations
+      const tick = (Math.random() - 0.5) * 0.8;
+      currentPrice = currentPrice + tick;
+      
+      // Update UI
+      elLivePrice.textContent = formatPrice(currentPrice);
+      
+      const changePercent = ((currentPrice - basePrice) / basePrice * 100).toFixed(2);
+      elPriceChange.textContent = (changePercent >= 0 ? '+' : '') + changePercent + '%';
+      elPriceChange.style.color = changePercent >= 0 ? '#41d98d' : '#ff5e7c';
+      elPriceChange.style.background = changePercent >= 0 ? 'rgba(0, 200, 120, 0.15)' : 'rgba(255, 94, 124, 0.15)';
 
-        // restart countdown (1 hour)
-        startCountdown();
+      // Check if we hit SL/TP
+      if (isLocked) {
+        monitorPriceForExit();
       }
+    }
 
-      // ---- initialize on page load ----
-      function init() {
-        currentPrice = BASE_PRICE;
-        updatePriceUI(currentPrice);
+    // --- EVENT LISTENERS ---
+    elRefreshBtn.addEventListener('click', generateNewSignal);
 
-        // initial snipper (random direction)
-        const initialDirection = Math.random() > 0.5 ? 'LONG' : 'SHORT';
-        updateSnipperUI(BASE_PRICE, initialDirection);
+    // Test Tool buttons (to easily test SL/TP hits)
+    document.getElementById('simWin').addEventListener('click', () => {
+      if(!isLocked) return;
+      currentPrice = tpPrice;
+      simulatePriceTick();
+    });
 
-        // start 1H countdown
-        startCountdown();
+    document.getElementById('simLoss').addEventListener('click', () => {
+      if(!isLocked) return;
+      currentPrice = slPrice;
+      simulatePriceTick();
+    });
 
-        // subtle price tick simulation (every 3s) – just to show life
-        setInterval(() => {
-          const tick = (Math.random() - 0.5) * 1.2;
-          let newPrice = currentPrice + tick;
-          if (newPrice > BASE_PRICE + 20) newPrice = BASE_PRICE + 20;
-          if (newPrice < BASE_PRICE - 20) newPrice = BASE_PRICE - 20;
-          currentPrice = Math.round(newPrice * 100) / 100;
-          updatePriceUI(currentPrice);
-        }, 3000);
-      }
+    // --- INITIALIZATION ---
+    function init() {
+      elLivePrice.textContent = formatPrice(currentPrice);
+      
+      // Update countdown every second
+      updateMT5Countdown();
+      countdownInterval = setInterval(updateMT5Countdown, 1000);
 
-      // manual refresh button → new snipper & reset countdown
-      refreshBtn.addEventListener('click', function() {
-        generateNewSnipper();
-      });
+      // Simulate price movement every 800ms
+      priceTickInterval = setInterval(simulatePriceTick, 800);
+    }
 
-      // start
-      init();
-
-      // clean interval on unload
-      window.addEventListener('beforeunload', function() {
-        if (countdownInterval) clearInterval(countdownInterval);
-      });
-
-    })();
+    init();
   </script>
 </body>
-  </html>
+</html>
